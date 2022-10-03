@@ -1,0 +1,18 @@
+{
+  "name": "5th_project",
+  "version": "1.0.0",
+  "description": "Express REST API",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Armine Demirchyan",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "md5": "^2.3.0",
+    "sqlite3": "^5.1.2"
+  }
+}
