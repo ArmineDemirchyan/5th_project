@@ -1,7 +1,6 @@
 import db from '../db/database.js';
 import bcrypt from "bcrypt";
 
-
 export const getUsers = (req, res) => {
     let sql = "select id, name, surname, email,phone  from user ";
 
@@ -20,7 +19,7 @@ export const getUsers = (req, res) => {
 }
 
 export const getUser = (req, res) => {
-    let sql = "select id, name, surname, email,phone from user where id = ?"
+    let sql = "select id, name, surname, email, phone from user where id = ?"
     let params = [req.params.id]
     db.get(sql, params, (err, row) => {
         if (err) {
@@ -45,17 +44,17 @@ export const createUser = async (req, res) => {
         password: await bcrypt.hash(req.body.password, salt)
     }
     
+    if (!req.body.email){
+        errors.push("No email specified");
+    }
     if (errors.length) {
         res.status(400).json({ "error": errors.join(",") });
         return;
     }
-    
-    //const hashedPassword = await bcrypt.hash(data.password, salt);
-    console.log(data.password);
+
     let sql =`INSERT INTO user (name, surname, email, phone, password) VALUES (?,?,?,?,?)`;
-    //db.execute.execute("INSERT INTO user (name, surname, email, phone, password) VALUES (?,?,?,?,?)", (req.get("name", "surname", "email", "phone"), hashedPassword))
     let params = [data.name, data.surname, data.email, data.phone];
-    db.run(sql, params, function (err, result) {
+    db.run(sql, params, function (err) {
         if (err) {
             res.status(400).json({ "error": err.message })
             return;
@@ -85,15 +84,14 @@ export const updateUser = async (req, res) => {
            password = COALESCE(?,password) 
            WHERE id = ?`,
         [data.name, data.surname, data.email, data.phone, req.params.id],
-        function (err, result) {
+        function (err) {
             if (err) {
                 res.status(400).json({ "error": res.message })
                 return;
             }
             res.json({
-                message: "success",
+                message: "updated",
                 data: data,
-                changes: this.changes
             })
         });
 }
@@ -101,7 +99,7 @@ export const deleteUser = (req, res) => {
     db.run(
         'DELETE FROM user WHERE id = ?',
         req.params.id,
-        function (err, result) {
+        function (err) {
             if (err) {
                 res.status(400).json({ "error": res.message })
                 return;
