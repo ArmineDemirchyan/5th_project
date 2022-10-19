@@ -43,8 +43,8 @@ export const createUser = async (req, res) => {
         phone: req.body.phone,
         password: await bcrypt.hash(req.body.password, salt)
     }
-    
-    if (!req.body.email){
+
+    if (!req.body.email) {
         errors.push("No email specified");
     }
     if (errors.length) {
@@ -52,7 +52,7 @@ export const createUser = async (req, res) => {
         return;
     }
 
-    let sql =`INSERT INTO user (name, surname, email, phone, password) VALUES (?,?,?,?,?)`;
+    let sql = `INSERT INTO user (name, surname, email, phone, password) VALUES (?,?,?,?,?)`;
     let params = [data.name, data.surname, data.email, data.phone];
     db.run(sql, params, function (err) {
         if (err) {
@@ -73,17 +73,18 @@ export const updateUser = async (req, res) => {
         surname: req.body.surname,
         email: req.body.email,
         phone: req.body.phone,
-        password:req.body.password ? await bcrypt.hash(req.body.password, salt): null
+        password: req.body.password ? await bcrypt.hash(req.body.password, salt) : null
     }
-    db.run(
-        `UPDATE user set 
-           name = COALESCE(?,name), 
-           surname = COALESCE(?,surname), 
-           email = COALESCE(?,email), 
-           phone = COALESCE(?,phone),
-           password = COALESCE(?,password) 
-           WHERE id = ?`,
-        [data.name, data.surname, data.email, data.phone, req.params.id],
+    db.run(`UPDATE user set 
+    name = COALESCE(?,name), 
+    surname = COALESCE(?,surname), 
+    email = COALESCE(?,email), 
+    phone = COALESCE(?,phone),
+    password = COALESCE(?,password) 
+    WHERE id = ?`,
+
+
+        [data.name, data.surname, data.email, data.phone, data.password, req.params.id],
         function (err) {
             if (err) {
                 res.status(400).json({ "error": res.message })
